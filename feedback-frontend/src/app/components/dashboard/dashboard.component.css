@@ -1,0 +1,93 @@
+.spacer {
+  flex: 1 1 auto;
+}
+
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  background-color: #f5f5f5;
+}
+
+mat-card {
+  width: 900px;
+  padding: 20px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.button-group button {
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+}
+
+.stats-area {
+  margin-bottom: 30px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.stat-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  padding: 15px !important;
+  width: auto !important;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card mat-card-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.stat-card mat-card-content {
+  font-size: 32px;
+  font-weight: bold;
+  color: #3f51b5;
+}
+
+.stat-card.status-pending mat-card-content {
+  color: #ff9800;
+}
+
+.stat-card.status-in-progress mat-card-content {
+  color: #2196f3;
+}
+
+.stat-card.status-resolved mat-card-content {
+  color: #4caf50;
+}
+
+.stat-card.category-academic mat-card-content {
+  color: #9c27b0;
+}
+
+.stat-card.category-infrastructure mat-card-content {
+  color: #607d8b;
+}
+
+.error {
+  color: #f44336;
+  padding: 10px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}

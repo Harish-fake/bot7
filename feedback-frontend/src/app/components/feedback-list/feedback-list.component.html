@@ -1,0 +1,79 @@
+<div class="feedback-list-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>My Feedback</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="feedbacks" class="mat-elevation-z8">
+        
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef> Category </th>
+          <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="subCategory">
+          <th mat-header-cell *matHeaderCellDef> Sub Category </th>
+          <td mat-cell *matCellDef="let element"> {{element.subCategory}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="content">
+          <th mat-header-cell *matHeaderCellDef> Content </th>
+          <td mat-cell *matCellDef="let element"> 
+            <div class="content-cell">
+              <span class="content-preview">{{element.content || 'No additional comments'}}</span>
+              <button mat-icon-button *ngIf="element.questionResponses && element.questionResponses.length > 0"
+                      (click)="toggleRatingsExpanded(element.id)" 
+                      class="expand-button">
+                <mat-icon>{{isRatingsExpanded(element.id) ? 'expand_less' : 'expand_more'}}</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ratings">
+          <th mat-header-cell *matHeaderCellDef> Your Rating </th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.questionResponses && element.questionResponses.length > 0" class="avg-rating">
+              <span class="rating-stars">★</span>
+              <span class="rating-value">{{getAverageRating(element.questionResponses)}}/5</span>
+            </div>
+            <span *ngIf="!element.questionResponses || element.questionResponses.length === 0" class="no-ratings">
+              N/A
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="submittedAt">
+          <th mat-header-cell *matHeaderCellDef> Submitted At </th>
+          <td mat-cell *matCellDef="let element"> {{element.submittedAt | date:'short'}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        
+        <!-- Expanded Row for Ratings Details -->
+        <tr class="ratings-detail-row" *ngFor="let element of feedbacks">
+          <td [attr.colspan]="displayedColumns.length" *ngIf="element.id && isRatingsExpanded(element.id)">
+            <div class="ratings-detail-container">
+              <h3 class="ratings-title">Your Ratings:</h3>
+              <div *ngFor="let response of element.questionResponses" class="rating-item">
+                <div class="rating-question">{{ response.question }}</div>
+                <div class="rating-stars-display">
+                  <span *ngFor="let star of [1,2,3,4,5]" 
+                        class="star-display" 
+                        [class.filled]="star <= response.rating">
+                    ★
+                  </span>
+                  <span class="rating-number">({{ response.rating }}/5)</span>
+                </div>
+                <div *ngIf="response.comment" class="rating-comment">
+                  <strong>Your Comment:</strong> {{ response.comment }}
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

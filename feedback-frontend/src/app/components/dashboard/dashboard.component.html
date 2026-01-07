@@ -1,0 +1,59 @@
+<mat-toolbar color="primary">
+  <span>Feedback System</span>
+  <span class="spacer"></span>
+  <span>{{ userName }} ({{ userRole }})</span>
+  <button mat-button (click)="logout()">Logout</button>
+</mat-toolbar>
+
+<div class="dashboard-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Dashboard</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="stats-area">
+        <div *ngIf="loadingStats">Loading statistics...</div>
+        <div *ngIf="statsError" class="error">{{ statsError }}</div>
+        <div class="stats-grid" *ngIf="stats">
+          <mat-card class="stat-card" (click)="viewAllFeedback()">
+            <mat-card-title>Total Feedback</mat-card-title>
+            <mat-card-content>{{ stats.totalFeedback }}</mat-card-content>
+          </mat-card>
+          <mat-card class="stat-card category-academic" (click)="viewFeedbackByCategory('ACADEMIC')">
+            <mat-card-title>Academic</mat-card-title>
+            <mat-card-content>{{ stats.academicCount }}</mat-card-content>
+          </mat-card>
+          <mat-card class="stat-card category-infrastructure" (click)="viewFeedbackByCategory('INFRASTRUCTURE')">
+            <mat-card-title>Infrastructure</mat-card-title>
+            <mat-card-content>{{ stats.infrastructureCount }}</mat-card-content>
+          </mat-card>
+          <mat-card class="stat-card" (click)="viewAnonymousFeedback()" *ngIf="userRole === 'STAFF'">
+            <mat-card-title>Anonymous</mat-card-title>
+            <mat-card-content>{{ stats.anonymousCount }}</mat-card-content>
+          </mat-card>
+          <mat-card class="stat-card" (click)="viewNamedFeedback()" *ngIf="userRole === 'STAFF'">
+            <mat-card-title>Named</mat-card-title>
+            <mat-card-content>{{ stats.namedCount }}</mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+      <div class="button-group">
+        <button mat-raised-button color="primary" 
+                *ngIf="userRole !== 'STAFF'"
+                (click)="navigateTo('/submit-feedback')">
+          Submit Feedback
+        </button>
+        <button mat-raised-button color="accent" 
+                *ngIf="userRole !== 'STAFF'"
+                (click)="navigateTo('/feedback-list')">
+          My Feedback
+        </button>
+        <button mat-raised-button color="warn" 
+                *ngIf="userRole === 'STAFF'" 
+                (click)="navigateTo('/admin-panel')">
+          Manage Feedback
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

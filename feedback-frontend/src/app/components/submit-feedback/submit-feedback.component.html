@@ -1,0 +1,86 @@
+<div class="submit-feedback-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Submit Feedback</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Category</mat-label>
+          <mat-select [(ngModel)]="feedbackRequest.category" name="category" (selectionChange)="onCategoryChange()" required>
+            <mat-option *ngFor="let cat of categories" [value]="cat">{{ cat }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Sub Category</mat-label>
+          <mat-select [(ngModel)]="feedbackRequest.subCategory" name="subCategory" (selectionChange)="onSubCategoryChange()" required>
+            <mat-option *ngFor="let sub of subCategories" [value]="sub">{{ sub }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Predefined Questions with Star Ratings -->
+        <div *ngIf="predefinedQuestions.length > 0" class="questions-section">
+          <h3 class="questions-header">Please rate the following aspects:</h3>
+          
+          <div *ngFor="let question of predefinedQuestions; let i = index" class="question-item">
+            <label class="question-label">
+              {{ question.question }}
+              <span *ngIf="question.required" class="required-indicator">*</span>
+            </label>
+            
+            <div class="star-rating">
+              <span *ngFor="let star of [1, 2, 3, 4, 5]" 
+                    class="star" 
+                    [ngClass]="getStarClass(i, star)"
+                    (click)="setRating(i, star)"
+                    (mouseenter)="setHoveredStar(i, star)"
+                    (mouseleave)="clearHoveredStar(i)">
+                ★
+              </span>
+              <span class="rating-text" *ngIf="questionResponses[i] && questionResponses[i].rating > 0">
+                ({{ questionResponses[i].rating }}/5)
+              </span>
+            </div>
+            
+            <mat-form-field appearance="outline" class="full-width comment-field">
+              <mat-label>Additional Comment (Optional)</mat-label>
+              <textarea matInput 
+                        [(ngModel)]="questionResponses[i].comment" 
+                        [name]="'comment-' + i" 
+                        rows="2"
+                        placeholder="Add any specific comments..."></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- General Feedback Content -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Additional Feedback (Optional)</mat-label>
+          <textarea matInput 
+                    [(ngModel)]="feedbackRequest.content" 
+                    name="content" 
+                    rows="4"
+                    placeholder="Share any additional thoughts or suggestions..."></textarea>
+        </mat-form-field>
+
+        <mat-checkbox [(ngModel)]="feedbackRequest.anonymous" name="anonymous" class="anonymous-checkbox">
+          Submit Anonymously
+        </mat-checkbox>
+
+        <div *ngIf="successMessage" class="success-message">
+          <mat-icon>check_circle</mat-icon>
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="error-message">
+          <mat-icon>error</mat-icon>
+          {{ errorMessage }}
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" class="submit-button full-width">
+          Submit Feedback
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

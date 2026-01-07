@@ -1,0 +1,194 @@
+<div class="admin-panel-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Admin Panel - All Feedback</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Filters Section -->
+      <div class="filters-section">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Search by Name or Content</mat-label>
+          <input matInput [(ngModel)]="searchText" (ngModelChange)="applyAllFilters()" placeholder="Type to search...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Filter by Role</mat-label>
+          <mat-select [(ngModel)]="selectedRole" (selectionChange)="applyAllFilters()">
+            <mat-option value="">All Roles</mat-option>
+            <mat-option value="STUDENT">Student</mat-option>
+            <mat-option value="FACULTY">Faculty</mat-option>
+            <mat-option value="ANONYMOUS">Anonymous</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Filter by Category</mat-label>
+          <mat-select [(ngModel)]="selectedCategory" (selectionChange)="onCategoryChange()">
+            <mat-option value="">All Categories</mat-option>
+            <mat-option value="ACADEMIC">Academic</mat-option>
+            <mat-option value="INFRASTRUCTURE">Infrastructure</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="filter-field" *ngIf="availableSubCategories.length > 0">
+          <mat-label>Filter by Sub Category</mat-label>
+          <mat-select [(ngModel)]="selectedSubCategory" (selectionChange)="applyAllFilters()">
+            <mat-option value="">All Sub Categories</mat-option>
+            <mat-option *ngFor="let sub of availableSubCategories" [value]="sub">{{sub}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <button mat-raised-button color="warn" (click)="clearFilters()" class="clear-button">
+          <mat-icon>clear</mat-icon>
+          Clear Filters
+        </button>
+
+        <button mat-raised-button color="primary" (click)="generateAnalytics()" class="analytics-button">
+          <mat-icon>bar_chart</mat-icon>
+          View Analytics
+        </button>
+      </div>
+      
+      <div class="results-count">
+        Showing {{feedbacks.length}} of {{allFeedbacks.length}} feedback(s)
+      </div>
+
+      <!-- Analytics Panel -->
+      <div class="analytics-panel" *ngIf="showAnalytics && analyticsData">
+        <div class="analytics-header">
+          <h2>Rating Analytics: {{analyticsData.category}} - {{analyticsData.subCategory}}</h2>
+          <button mat-icon-button (click)="closeAnalytics()" class="close-button">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="analytics-summary">
+          <p><strong>Total Feedback:</strong> {{analyticsData.totalFeedback}}</p>
+          <p><strong>Total Questions Analyzed:</strong> {{analyticsData.questions.length}}</p>
+        </div>
+        <div class="chart-container">
+          <canvas #ratingsChart></canvas>
+        </div>
+        <div class="analytics-insights">
+          <h3>Key Insights:</h3>
+          <div class="insight-item low-rated" *ngIf="analyticsData.questions[0]">
+            <mat-icon>trending_down</mat-icon>
+            <div>
+              <strong>Lowest Rated:</strong> {{analyticsData.questions[0].question}}
+              <br><span class="rating-value">Average: {{analyticsData.questions[0].average.toFixed(2)}}/5 ({{analyticsData.questions[0].count}} responses)</span>
+            </div>
+          </div>
+          <div class="insight-item high-rated" *ngIf="analyticsData.questions[analyticsData.questions.length - 1]">
+            <mat-icon>trending_up</mat-icon>
+            <div>
+              <strong>Highest Rated:</strong> {{analyticsData.questions[analyticsData.questions.length - 1].question}}
+              <br><span class="rating-value">Average: {{analyticsData.questions[analyticsData.questions.length - 1].average.toFixed(2)}}/5 ({{analyticsData.questions[analyticsData.questions.length - 1].count}} responses)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <table mat-table [dataSource]="feedbacks" class="mat-elevation-z8">
+        
+        <ng-container matColumnDef="submitterName">
+          <th mat-header-cell *matHeaderCellDef> Submitted By </th>
+          <td mat-cell *matCellDef="let element"> 
+            <span [class.anonymous-text]="element.anonymous">
+              {{element.anonymous ? 'Anonymous' : (element.submitterName || 'Unknown')}}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="submitterRole">
+          <th mat-header-cell *matHeaderCellDef> Role </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-chip *ngIf="element.submitterRole === 'STUDENT'" class="role-chip role-student">
+              STUDENT
+            </mat-chip>
+            <mat-chip *ngIf="element.submitterRole === 'FACULTY'" class="role-chip role-faculty">
+              FACULTY
+            </mat-chip>
+            <mat-chip *ngIf="element.submitterRole === 'STAFF'" class="role-chip role-staff">
+              STAFF
+            </mat-chip>
+            <mat-chip *ngIf="element.submitterRole === 'ANONYMOUS'" class="role-chip role-anonymous">
+              ANONYMOUS
+            </mat-chip>
+            <mat-chip *ngIf="!element.submitterRole" class="role-chip role-anonymous">
+              ANONYMOUS
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef> Category </th>
+          <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="subCategory">
+          <th mat-header-cell *matHeaderCellDef> Sub Category </th>
+          <td mat-cell *matCellDef="let element"> {{element.subCategory}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="content">
+          <th mat-header-cell *matHeaderCellDef> Content </th>
+          <td mat-cell *matCellDef="let element"> 
+            <div class="content-cell">
+              <span class="content-preview">{{element.content || 'No additional comments'}}</span>
+              <button mat-icon-button *ngIf="element.questionResponses && element.questionResponses.length > 0"
+                      (click)="toggleRatingsExpanded(element.id)" 
+                      class="expand-button"
+                      [attr.aria-label]="'View ratings'">
+                <mat-icon>{{isRatingsExpanded(element.id) ? 'expand_less' : 'expand_more'}}</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ratings">
+          <th mat-header-cell *matHeaderCellDef> Average Rating </th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.questionResponses && element.questionResponses.length > 0" class="avg-rating">
+              <span class="rating-stars">★</span>
+              <span class="rating-value">{{getAverageRating(element.questionResponses)}}/5</span>
+            </div>
+            <span *ngIf="!element.questionResponses || element.questionResponses.length === 0" class="no-ratings">
+              N/A
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="submittedAt">
+          <th mat-header-cell *matHeaderCellDef> Submitted At </th>
+          <td mat-cell *matCellDef="let element"> {{element.submittedAt | date:'short'}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        
+        <!-- Expanded Row for Ratings Details -->
+        <tr class="ratings-detail-row" *ngFor="let element of feedbacks">
+          <td [attr.colspan]="displayedColumns.length" *ngIf="element.id && isRatingsExpanded(element.id)">
+            <div class="ratings-detail-container">
+              <h3 class="ratings-title">Detailed Ratings:</h3>
+              <div *ngFor="let response of element.questionResponses" class="rating-item">
+                <div class="rating-question">{{ response.question }}</div>
+                <div class="rating-stars-display">
+                  <span *ngFor="let star of [1,2,3,4,5]" 
+                        class="star-display" 
+                        [class.filled]="star <= response.rating">
+                    ★
+                  </span>
+                  <span class="rating-number">({{ response.rating }}/5)</span>
+                </div>
+                <div *ngIf="response.comment" class="rating-comment">
+                  <strong>Comment:</strong> {{ response.comment }}
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>

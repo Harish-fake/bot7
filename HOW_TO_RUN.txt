@@ -1,0 +1,440 @@
+
+STEP 1: CLONE OR EXTRACT PROJECT
+---------------------------------
+- Extract the project to: E:\Projects\OOAD\
+- Project Structure:
+  E:\Projects\OOAD\
+  ├── feedback-system\      (Backend - Spring Boot)
+  └── feedback-frontend\    (Frontend - Angular)
+
+
+STEP 2: START MONGODB
+---------------------------------
+1. Open Command Prompt or PowerShell as Administrator
+
+2. Start MongoDB service:
+   net start MongoDB
+
+   OR if MongoDB is not installed as service:
+   mongod --dbpath "C:\data\db"
+
+3. Verify MongoDB is running:
+   - Open browser: http://localhost:27017/
+   - Should see: "It looks like you are trying to access MongoDB over HTTP..."
+
+4. (Optional) Open MongoDB Compass to view database:
+   - Connection String: mongodb://localhost:27017
+   - Database Name: feedback_system
+
+
+STEP 3: SETUP AND RUN BACKEND (Spring Boot)
+--------------------------------------------
+1. Open Command Prompt/PowerShell
+
+2. Navigate to backend folder:
+   cd E:\Projects\OOAD\feedback-system
+
+3. Install dependencies and build project:
+   mvn clean install
+
+   (This will download all dependencies and compile the project)
+
+4. Run the backend server:
+   mvn spring-boot:run
+
+5. Wait until you see:
+   "Started FeedbackSystemApplication in X.XXX seconds"
+
+6. Verify backend is running:
+   - Open browser: http://localhost:8080
+   - You should see a message or Whitelabel Error Page (this is normal)
+
+7. Keep this terminal window open (backend must keep running)
+
+
+STEP 4: SETUP AND RUN FRONTEND (Angular)
+-----------------------------------------
+1. Open a NEW Command Prompt/PowerShell window
+
+2. Navigate to frontend folder:
+   cd E:\Projects\OOAD\feedback-frontend
+
+3. Install Node.js dependencies:
+   npm install
+
+   (This will download all npm packages - may take 2-5 minutes)
+
+4. Wait for installation to complete (you'll see "added XXX packages")
+
+5. Start the Angular development server:
+   ng serve
+
+   OR if ng command not found:
+   npm start
+
+6. Wait until you see:
+   "Angular Live Development Server is listening on localhost:4200"
+   "Compiled successfully"
+
+7. Keep this terminal window open (frontend must keep running)
+
+
+STEP 5: ACCESS THE APPLICATION
+-------------------------------
+1. Open your web browser (Chrome, Firefox, or Edge)
+
+2. Go to: http://localhost:4200
+
+3. You should see the Login/Register page
+
+4. Register a new account to get started!
+
+================================================================================
+                        DEFAULT USER ACCOUNTS
+================================================================================
+
+STAFF ACCOUNT (Admin Access)
+-----------------------------
+If you need a pre-created admin account, register with:
+- Name: Admin User
+- Email: admin@feedback.com
+- Password: admin123
+- Role: STAFF
+
+STUDENT ACCOUNT (For Testing)
+------------------------------
+- Name: John Doe
+- Email: student@test.com
+- Password: student123
+- Role: STUDENT
+
+FACULTY ACCOUNT (For Testing)
+------------------------------
+- Name: Dr. Smith
+- Email: faculty@test.com
+- Password: faculty123
+- Role: FACULTY
+
+================================================================================
+                         USER GUIDE - FEATURES
+================================================================================
+
+FOR STUDENTS & FACULTY
+-----------------------
+1. Login with your credentials
+2. Dashboard shows feedback statistics
+3. Click "Submit Feedback" to provide feedback:
+   - Select Category (Academic/Infrastructure)
+   - Select Sub-Category (Courses, Faculty, Library, etc.)
+   - Rate predefined questions (1-5 stars)
+   - Add optional comments
+   - Submit as Named or Anonymous
+4. View "My Feedback" to see your submitted feedback
+5. Logout when done
+
+FOR STAFF (Admin)
+-----------------
+1. Login with STAFF credentials
+2. Dashboard shows all statistics
+3. Click "Manage Feedback" to access Admin Panel:
+   - View all feedback in table format
+   - Filter by Role, Category, Sub-Category
+   - Search by name or content
+   - View detailed ratings (click expand button)
+   - Click "View Analytics" to see graphs:
+     * Select Category and Sub-Category
+     * View bar chart with color-coded ratings
+     * See highest and lowest rated questions
+4. Logout when done
+
+================================================================================
+                      TROUBLESHOOTING GUIDE
+================================================================================
+
+PROBLEM 1: "Cannot connect to MongoDB"
+SOLUTION:
+- Ensure MongoDB service is running: net start MongoDB
+- Check if port 27017 is available
+- Verify connection string in application.properties
+
+PROBLEM 2: "Port 8080 already in use"
+SOLUTION:
+- Another application is using port 8080
+- Stop the other application OR
+- Change port in: feedback-system\src\main\resources\application.properties
+  Add line: server.port=8081
+
+PROBLEM 3: "Port 4200 already in use"
+SOLUTION:
+- Run Angular on different port:
+  ng serve --port 4201
+- Access at: http://localhost:4201
+
+PROBLEM 4: "npm command not found"
+SOLUTION:
+- Node.js not installed or not in PATH
+- Reinstall Node.js and check "Add to PATH" option
+- Restart Command Prompt after installation
+
+PROBLEM 5: "mvn command not found"
+SOLUTION:
+- Maven not installed or not in PATH
+- Use IDE's built-in Maven OR
+- Download and install Maven, add to PATH
+
+PROBLEM 6: "java command not found"
+SOLUTION:
+- JDK not installed or not in PATH
+- Install JDK 17+
+- Set JAVA_HOME environment variable
+- Add %JAVA_HOME%\bin to PATH
+
+PROBLEM 7: Backend shows "Lombok errors"
+SOLUTION:
+- Enable Annotation Processing in your IDE
+- For IntelliJ: Settings → Build → Compiler → Annotation Processors → Enable
+- Rebuild project: mvn clean install
+
+PROBLEM 8: Frontend shows compilation errors
+SOLUTION:
+- Delete node_modules folder
+- Delete package-lock.json
+- Run: npm install
+- Run: ng serve
+
+PROBLEM 9: "Cannot login" or "Invalid credentials"
+SOLUTION:
+- Check if backend is running (http://localhost:8080)
+- Check MongoDB connection
+- Register a new account
+- Check browser console for errors (F12)
+
+PROBLEM 10: Analytics not showing
+SOLUTION:
+- Ensure you have selected both Category and Sub-Category
+- Make sure there is feedback with ratings for that selection
+- Check browser console for JavaScript errors (F12)
+
+================================================================================
+                        TESTING THE SYSTEM
+================================================================================
+
+QUICK TEST PROCEDURE
+--------------------
+1. Register as STUDENT
+2. Login and submit feedback with ratings
+3. Logout
+4. Register as STAFF
+5. Login and view Admin Panel
+6. Check if your feedback appears
+7. View Analytics for the category you submitted
+
+FULL TEST PROCEDURE
+-------------------
+Refer to TEST_CASES.md for comprehensive testing (101 test cases)
+
+================================================================================
+                         STOPPING THE APPLICATION
+================================================================================
+
+TO STOP FRONTEND:
+-----------------
+- Go to the terminal running "ng serve"
+- Press: Ctrl + C
+- Confirm with: Y (if prompted)
+
+TO STOP BACKEND:
+----------------
+- Go to the terminal running "mvn spring-boot:run"
+- Press: Ctrl + C
+- Wait for "BUILD SUCCESS" message
+
+TO STOP MONGODB:
+----------------
+- Open Command Prompt as Administrator
+- Run: net stop MongoDB
+  OR
+- Close the mongod terminal window
+
+================================================================================
+                         PROJECT STRUCTURE
+================================================================================
+
+BACKEND (feedback-system)
+--------------------------
+feedback-system\
+├── src\main\java\com\feedback\
+│   ├── controller\
+│   │   ├── AuthController.java          (Login/Register endpoints)
+│   │   └── FeedbackController.java      (Feedback CRUD endpoints)
+│   ├── model\
+│   │   ├── User.java                    (User entity with roles)
+│   │   └── Feedback.java                (Feedback entity with ratings)
+│   ├── repository\
+│   │   ├── UserRepository.java          (MongoDB user operations)
+│   │   └── FeedbackRepository.java      (MongoDB feedback operations)
+│   ├── service\
+│   │   ├── AuthService.java             (Authentication logic)
+│   │   └── FeedbackService.java         (Feedback business logic)
+│   └── security\
+│       ├── JwtUtil.java                 (JWT token generation)
+│       └── SecurityConfig.java          (Security configuration)
+├── src\main\resources\
+│   └── application.properties           (MongoDB, server config)
+└── pom.xml                              (Maven dependencies)
+
+FRONTEND (feedback-frontend)
+----------------------------
+feedback-frontend\
+├── src\app\
+│   ├── components\
+│   │   ├── login\                       (Login page)
+│   │   ├── register\                    (Registration page)
+│   │   ├── dashboard\                   (Dashboard with stats)
+│   │   ├── submit-feedback\             (Feedback form with ratings)
+│   │   ├── feedback-list\               (User's feedback list)
+│   │   └── admin-panel\                 (Admin view with analytics)
+│   ├── services\
+│   │   ├── auth.service.ts              (Authentication API calls)
+│   │   ├── feedback.service.ts          (Feedback API calls)
+│   │   └── questions.service.ts         (Predefined questions)
+│   ├── models\
+│   │   ├── user.model.ts                (User interface)
+│   │   └── feedback.model.ts            (Feedback interface)
+│   └── guards\
+│       └── auth.guard.ts                (Route protection)
+├── package.json                         (npm dependencies)
+└── angular.json                         (Angular configuration)
+
+================================================================================
+                         API ENDPOINTS
+================================================================================
+
+AUTHENTICATION ENDPOINTS
+------------------------
+POST   http://localhost:8080/api/auth/register    (Register new user)
+POST   http://localhost:8080/api/auth/login       (Login user)
+
+FEEDBACK ENDPOINTS
+------------------
+POST   http://localhost:8080/api/feedback         (Submit feedback)
+GET    http://localhost:8080/api/feedback/user/{userId}    (Get user's feedback)
+GET    http://localhost:8080/api/feedback/all     (Get all feedback - Admin)
+GET    http://localhost:8080/api/feedback/stats   (Get statistics)
+
+FILTER PARAMETERS (for /all endpoint)
+--------------------------------------
+?role=STUDENT              (Filter by role)
+?category=ACADEMIC         (Filter by category)
+?subCategory=Courses       (Filter by sub-category)
+?search=keyword            (Search in content/name)
+
+================================================================================
+                         DATABASE COLLECTIONS
+================================================================================
+
+MongoDB Database: feedback_system
+
+COLLECTIONS:
+------------
+1. users
+   - _id: ObjectId
+   - name: String
+   - email: String (unique)
+   - password: String (encrypted)
+   - role: String (STUDENT/FACULTY/STAFF)
+
+2. feedbacks
+   - _id: ObjectId
+   - content: String
+   - category: String
+   - subCategory: String
+   - submittedBy: ObjectId (reference to users._id, null if anonymous)
+   - submitterName: String
+   - submitterRole: String
+   - isAnonymous: Boolean
+   - questionResponses: Array [
+       {
+         question: String
+         rating: Number (1-5)
+         comment: String (optional)
+       }
+     ]
+   - createdAt: Date
+
+================================================================================
+                         IMPORTANT NOTES
+================================================================================
+
+1. KEEP ALL 3 TERMINALS OPEN:
+   - Terminal 1: MongoDB (mongod or service)
+   - Terminal 2: Backend (mvn spring-boot:run)
+   - Terminal 3: Frontend (ng serve)
+
+2. ALWAYS START IN THIS ORDER:
+   Step 1: MongoDB
+   Step 2: Backend
+   Step 3: Frontend
+
+3. FIRST TIME SETUP MAY TAKE LONGER:
+   - Maven downloads dependencies (~5-10 minutes)
+   - npm installs packages (~3-5 minutes)
+   - Be patient during first run!
+
+4. DATA PERSISTENCE:
+   - All data is stored in MongoDB
+   - Data persists even after stopping the application
+   - To reset: Drop database in MongoDB Compass
+
+5. SECURITY:
+   - Passwords are encrypted using BCrypt
+   - JWT tokens expire after 24 hours
+   - CORS is enabled for localhost:4200
+
+6. BROWSER COMPATIBILITY:
+   - Tested on: Chrome 120+, Firefox 120+, Edge 120+
+   - Recommended: Latest Chrome or Edge
+
+7. STAFF CANNOT SUBMIT FEEDBACK:
+   - Staff role is admin-only
+   - Staff can only view and analyze feedback
+   - Use STUDENT or FACULTY role to submit feedback
+
+================================================================================
+                         SUPPORT & CONTACT
+================================================================================
+
+For issues or questions:
+- Check TEST_CASES.md for known issues
+- Check FEATURES_DOCUMENTATION.md for feature details
+- Review console logs (F12 in browser)
+- Check terminal output for error messages
+
+================================================================================
+                           QUICK REFERENCE
+================================================================================
+
+START COMMANDS:
+---------------
+MongoDB:     net start MongoDB
+Backend:     cd E:\Projects\OOAD\feedback-system && mvn spring-boot:run
+Frontend:    cd E:\Projects\OOAD\feedback-frontend && ng serve
+
+ACCESS URLS:
+------------
+Frontend:    http://localhost:4200
+Backend:     http://localhost:8080
+MongoDB:     mongodb://localhost:27017
+
+STOP COMMANDS:
+--------------
+Frontend:    Ctrl + C (in ng serve terminal)
+Backend:     Ctrl + C (in mvn terminal)
+MongoDB:     net stop MongoDB
+
+================================================================================
+                        END OF GUIDE
+================================================================================
+
+Last Updated: December 16, 2025
+Version: 2.0 (Rating System Enhancement)
